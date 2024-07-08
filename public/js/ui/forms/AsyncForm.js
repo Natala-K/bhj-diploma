@@ -1,3 +1,5 @@
+// AsyncForm.js
+
 /**
  * Класс AsyncForm управляет всеми формами
  * приложения, которые не должны быть отправлены с
@@ -13,7 +15,11 @@ class AsyncForm {
    * через registerEvents()
    * */
   constructor(element) {
-
+    if (!element) {
+      throw new Error('Элемент не передан');
+    }
+    this.element = element;
+    this.registerEvents();
   }
 
   /**
@@ -21,7 +27,10 @@ class AsyncForm {
    * вызывает метод submit()
    * */
   registerEvents() {
-
+    this.element.addEventListener('submit', (event) => {
+      event.preventDefault();
+      this.submit();
+    });
   }
 
   /**
@@ -32,11 +41,16 @@ class AsyncForm {
    * }
    * */
   getData() {
-
+    const formData = new FormData(this.element);
+    const data = {};
+    for (const [key, value] of formData.entries()) {
+      data[key] = value;
+    }
+    return data;
   }
 
-  onSubmit(options){
-
+  onSubmit(options) {
+    // Переопределяется в наследниках
   }
 
   /**
@@ -44,6 +58,6 @@ class AsyncForm {
    * данные, полученные из метода getData()
    * */
   submit() {
-
+    this.onSubmit(this.getData());
   }
 }
