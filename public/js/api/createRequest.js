@@ -1,36 +1,53 @@
 // createRequest.js
 
-function createRequest(options) {
-  const xhr = new XMLHttpRequest();
-  
-  // Если метод GET, добавляем параметры к URL
-  if (options.method === 'GET') {
-      const urlParams = new URLSearchParams(options.data).toString();
-      const urlWithParams = options.url + '?' + urlParams;
-      xhr.open(options.method, urlWithParams);
-  } else {
-      xhr.open(options.method, options.url);
-  }
-
-  xhr.responseType = 'json';
-
-  xhr.onload = () => {
-      options.callback(null, xhr.response);
-  };
-
-  xhr.onerror = () => {
-      options.callback(xhr.response, null);
-  };
-
-  if (options.method === 'GET') {
-      xhr.send();
-  } else {
+function prepareRequestData(method, url, data) {
+    if (method === 'GET') {
+      const urlParams = new URLSearchParams(data).toString();
+      return url + '?' + urlParams;
+    } else {
       const formData = new FormData();
-      for (const key in options.data) {
-          formData.append(key, options.data[key]);
+      for (const key in data) {
+        formData.append(key, data[key]);
       }
-      xhr.send(formData);
+      return formData;
+    }
   }
-}
-
+  
+  function sendRequest(method, url, data, callback) {
+    const xhr = new XMLHttpRequest();
+    xhr.open(method, url);
+    xhr.responseType = 'json';
+  
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        callback(null, xhr.response);
+      } else {
+        callback(xhr.response, null);
+      }
+    };
+  
+    xhr.onerror = () => {
+      callback(xhr.response, null);
+    };
+  
+    if (method === 'GET') {
+      xhr.send();
+    } else {
+      xhr.send(data);
+    }
+  }
+  
+  function createRequest(options) {
+    const { method, url, data, callback } = options;
+    let requestData;
+  
+    if (method === 'GET') {
+      requestData = prepareRequestData(method, url, data);
+      sendRequest(method, requestData, null, callback);
+    } else {
+      requestData = prepareRequestData(method, url, data);
+      sendRequest(method, url, requestData, callback);
+    }
+  }
+  
   
