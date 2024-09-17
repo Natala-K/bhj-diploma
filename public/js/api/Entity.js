@@ -22,7 +22,7 @@ class Entity {
   static remove(data, callback) {
     createRequest({
       method: 'DELETE',
-      url: `${this.URL}/${data.id}`,
+      url: this.URL,
       data,
       callback
     });

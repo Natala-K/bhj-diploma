@@ -27,7 +27,7 @@ class AccountsWidget {
     const user = User.current();
     if (user) {
       Account.list({}, (err, response) => {
-        if (response.success) {
+        if (response && response.success) {  // Сначала проверяем наличие response, а потом его свойства success
           this.clear();
           response.data.forEach(account => this.renderItem(account));
         }

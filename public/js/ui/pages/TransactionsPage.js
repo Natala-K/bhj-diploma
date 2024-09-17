@@ -98,7 +98,13 @@ class TransactionsPage {
 
   renderTransactions(data) {
     const content = this.element.querySelector('.content');
-    content.innerHTML = '';
-    data.forEach(item => content.insertAdjacentHTML('beforeend', this.getTransactionHTML(item)));
+    
+    // Используем reduce для накопления всей разметки
+    const html = data.reduce((acc, item) => acc + this.getTransactionHTML(item), '');
+    
+    // Присваиваем разметку за одно действие
+    content.innerHTML = html;
   }
+  
+  
 }
