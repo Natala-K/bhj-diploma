@@ -16,19 +16,20 @@ class CreateTransactionForm extends AsyncForm {
     Account.list({}, (err, response) => {
       if (response && response.success && response.data.length > 0) {
         const select = this.element.querySelector('select[name="account_id"]');
-        select.innerHTML = ''; // Очищаем старые опции
   
-        response.data.forEach(account => {
-          const option = document.createElement('option');
-          option.value = account.id;
-          option.textContent = account.name;
-          select.appendChild(option);
-        });
+        // Формируем разметку с помощью reduce и шаблонных строк
+        const optionsHTML = response.data.reduce((acc, account) => {
+          return acc + `<option value="${account.id}">${account.name}</option>`;
+        }, '');
+  
+        // Присваиваем накопленное значение разметки за один раз
+        select.innerHTML = optionsHTML;
       } else {
         console.error('Ошибка при загрузке счетов или нет доступных счетов', err);
       }
     });
   }
+  
 
   /**
    * Создаёт новую транзакцию (доход или расход)
