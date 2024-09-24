@@ -102,8 +102,7 @@ class TransactionsPage {
     // Используем reduce для накопления всей разметки
     const html = data.reduce((acc, item) => acc + this.getTransactionHTML(item), '');
     
-    // Присваиваем разметку за одно действие
-    content.innerHTML = html;
+  
   }
   
   
