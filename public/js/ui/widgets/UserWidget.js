@@ -7,7 +7,7 @@ class UserWidget {
    * */
   constructor(element) {
     if (!element) {
-      throw new Error('Element is required');
+      throw new Error('Элемент обязателен');
     }
     this.element = element;
   }
